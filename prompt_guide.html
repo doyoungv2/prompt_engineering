@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프롬프트 엔지니어링 마스터 가이드</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        :root {
+            --bg-body: #0a0a0c;
+            --bg-sidebar: #111116;
+            --bg-card: #16161c;
+            --text-main: #e0e0e0;
+            --text-muted: #888899;
+            --benz-purple: #9d4edd;
+            --benz-blue: #00b4d8;
+            --benz-pink: #ff006e;
+            --glow-purple: 0 0 15px rgba(157, 78, 221, 0.5);
+            --glow-blue: 0 0 15px rgba(0, 180, 216, 0.5);
+            --glow-pink: 0 0 15px rgba(255, 0, 110, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Scroll Progress Bar */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--benz-pink), var(--benz-purple), var(--benz-blue));
+            width: 0%;
+            z-index: 1000;
+            box-shadow: var(--glow-purple);
+            transition: width 0.1s;
+        }
+
+        /* Sidebar & Search */
+        aside {
+            width: 300px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .brand {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            border-left: 4px solid var(--benz-blue);
+            padding-left: 1rem;
+            text-shadow: var(--glow-blue);
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            margin-bottom: 2rem;
+            font-family: inherit;
+        }
+        .search-box:focus {
+            outline: none;
+            border-color: var(--benz-purple);
+            box-shadow: var(--glow-purple);
+        }
+
+        nav ul { list-style: none; }
+        .nav-category {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 1.5rem 0 0.5rem 0;
+            font-weight: 700;
+        }
+        nav li a {
+            display: block;
+            padding: 0.6rem 0.8rem;
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        nav li a:hover, nav li a.active {
+            background: linear-gradient(90deg, rgba(157, 78, 221, 0.15), transparent);
+            color: #fff;
+            border-left: 3px solid var(--benz-purple);
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0; width: 100%;
+            background: var(--bg-sidebar);
+            padding: 1rem;
+            z-index: 99;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            align-items: center;
+            justify-content: space-between;
+        }
+        .hamburger { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+
+        /* Main Content */
+        main {
+            margin-left: 300px;
+            padding: 4rem 10%;
+            width: calc(100% - 300px);
+            max-width: 1200px;
+        }
+
+        h1 {
+            font-size: 3rem; margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, var(--benz-purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(var(--glow-purple));
+        }
+
+        section { margin-bottom: 5rem; scroll-margin-top: 5rem; }
+
+        h2 {
+            font-size: 2rem; margin-bottom: 2rem; padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative; color: #fff;
+        }
+        h2::after {
+            content: ''; position: absolute; bottom: -1px; left: 0;
+            width: 60px; height: 3px;
+            background: var(--benz-blue); box-shadow: var(--glow-blue);
+        }
+
+        h3 { font-size: 1.3rem; margin: 1.5rem 0 1rem 0; color: var(--benz-purple); }
+        p { margin-bottom: 1rem; color: #ccc; }
+
+        /* Priority Badges */
+        .badge {
+            display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold; margin-right: 0.5rem;
+        }
+        .badge.critical { background: rgba(255,0,110,0.1); color: var(--benz-pink); border: 1px solid var(--benz-pink); box-shadow: var(--glow-pink); }
+        .badge.recommend { background: rgba(0,180,216,0.1); color: var(--benz-blue); border: 1px solid var(--benz-blue); box-shadow: var(--glow-blue); }
+
+        /* Prompt Box (Pre) & Copy Button & Var Highlight */
+        .prompt-container { position: relative; margin-bottom: 1.5rem; }
+        pre {
+            background: #0d0d12; padding: 1.5rem; border-radius: 8px; overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.08); font-family: 'Consolas', 'D2Coding', monospace;
+            font-size: 0.95rem; line-height: 1.5; color: #a9a9b3; white-space: pre-wrap;
+        }
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(255,255,255,0.1); border: none; color: #fff;
+            padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer;
+            font-size: 0.8rem; transition: 0.3s;
+        }
+        .copy-btn:hover { background: var(--benz-purple); box-shadow: var(--glow-purple); }
+        
+        .var-highlight {
+            background: rgba(0, 180, 216, 0.15);
+            color: var(--benz-blue);
+            border-radius: 4px; padding: 0 4px;
+            border: 1px dashed var(--benz-blue);
+        }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .tab-btn {
+            background: none; border: none; color: var(--text-muted); padding: 0.5rem 1rem;
+            cursor: pointer; font-size: 1rem; border-bottom: 2px solid transparent; transition: 0.3s;
+        }
+        .tab-btn.active { color: #fff; border-bottom-color: var(--benz-purple); text-shadow: var(--glow-purple); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Accordion */
+        details {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; margin-bottom: 1rem; overflow: hidden;
+        }
+        summary {
+            padding: 1rem; cursor: pointer; font-weight: bold; color: var(--benz-pink);
+            background: rgba(255,255,255,0.02); outline: none; list-style: none;
+        }
+        summary::-webkit-details-marker { display: none; }
+        summary::before { content: '+ '; }
+        details[open] summary::before { content: '- '; }
+        details .accordion-body { padding: 1rem; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        th { background: rgba(157, 78, 221, 0.1); color: var(--benz-purple); }
+
+        /* Back to Top */
+        #back-to-top {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 50px; height: 50px; border-radius: 50%;
+            background: var(--bg-card); border: 2px solid var(--benz-purple);
+            color: #fff; font-size: 1.5rem; cursor: pointer;
+            display: none; align-items: center; justify-content: center;
+            transition: 0.3s; z-index: 1000;
+        }
+        #back-to-top:hover {
+            background: var(--benz-purple);
+            box-shadow: 0 0 20px var(--benz-purple);
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(157, 78, 221, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(157, 78, 221, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(157, 78, 221, 0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            aside { transform: translateX(-100%); }
+            aside.open { transform: translateX(0); }
+            main { margin-left: 0; width: 100%; padding: 6rem 5% 2rem 5%; }
+            .mobile-header { display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="progress-bar"></div>
+
+    <div class="mobile-header">
+        <div class="brand" style="margin:0; padding:0; border:none; text-shadow:none;">PROMPT ENG.</div>
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    </div>
+
+    <aside id="sidebar">
+        <div class="brand">PROMPT ENG.</div>
+        <input type="text" id="searchInput" class="search-box" placeholder="빠른 탐색 (ex. 페르소나)" onkeyup="filterContent()">
+        
+        <nav>
+            <div class="nav-category">Chapter 1. 프롬프트의 기초</div>
+            <ul>
+                <li><a href="#sec1" class="nav-link">1. 3가지 핵심 유형</a></li>
+                <li><a href="#sec2" class="nav-link">2. 샷(Shot) 기법</a></li>
+            </ul>
+            <div class="nav-category">Chapter 2. 구조화와 전략</div>
+            <ul>
+                <li><a href="#sec3" class="nav-link">3. 페르소나 패턴</a></li>
+                <li><a href="#sec4" class="nav-link">4. 마크다운 작성법</a></li>
+            </ul>
+            <div class="nav-category">Chapter 3. 제어와 최적화</div>
+            <ul>
+                <li><a href="#sec5" class="nav-link">5. 강도와 중요도 조절</a></li>
+                <li><a href="#sec6" class="nav-link">6. 톤(말투) 지정</a></li>
+                <li><a href="#sec7" class="nav-link">7. 대안 접근법 패턴</a></li>
+            </ul>
+            <div class="nav-category">Chapter 4. 고급 패턴</div>
+            <ul>
+                <li><a href="#sec8" class="nav-link">8. 이용자 페르소나 패턴</a></li>
+                <li><a href="#sec9" class="nav-link">9. 레시피 패턴</a></li>
+                <li><a href="#sec10" class="nav-link">10. 뒤집힌 상호작용 패턴</a></li>
+                <li><a href="#sec11" class="nav-link">11. 인지 검증자 패턴</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main id="main-content">
+        <header>
+            <p style="color: var(--benz-pink); font-weight: bold; letter-spacing: 1px;">WEB DEVELOPER'S MASTERPIECE</p>
+            <h1>프롬프트 엔지니어링</h1>
+            <p>AI가 "지능이 낮은 초등학생"이라는 전제하에, 완벽한 답변을 이끌어내는 대화 설계 기술</p>
+        </header>
+
+        <section id="sec1" class="searchable">
+            <h2>1. 프롬프트의 3가지 유형</h2>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab(event, 'type-desc')">서술형</button>
+                <button class="tab-btn" onclick="switchTab(event, 'type-inst')">지침형</button>
+                <button class="tab-btn" onclick="switchTab(event, 'type-func')">함수형</button>
+            </div>
+            
+            <div id="type-desc" class="tab-content active">
+                <p><strong>서술형 (맥락 중심, 재사용 낮음, 유연성 높음)</strong><br>
+                - 맥락과 배경을 설명하여 AI가 상황을 이해하도록 유도</p>
+                <div class="prompt-container">
+                    <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre class="prompt-box">예) 당신의 10년 경력의 무역 전문가 입니다.
+예) 중소기업 수출 담당자가 HS code를 처음 배우는 상황입니다. 이 사람에게 HS code의 개념과 중요성을 설명해주세요.</pre>
+                </div>
+            </div>
+
+            <div id="type-inst" class="tab-content">
+                <p><strong>지침형 (규칙 중심, 재사용 중간, 유연성 중간)</strong><br>
+                - 단계별 절차나 명확한 규칙을 제시하여 원하는 출력을 유도</p>
+                <div class="prompt-container">
+                    <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre class="prompt-box">예) 다음 규칙에 따라 python 코드를 작성해.
+1. 함수명은 snake_case로 작성
+2. 각 함수의 docstring 포함
+3. 예외 처리 반드시 포함
+4. 결과는 JSON 형식으로 반환</pre>
+                </div>
+            </div>
+
+            <div id="type-func" class="tab-content">
+                <p><strong>함수형 (구조 중심, 재사용 높음, 유연성 낮음)</strong><br>
+                - 입력값과 출력값을 명확히 정의하여 일관된 결과를 생성</p>
+                <div class="prompt-container">
+                    <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre class="prompt-box">예) 입력 : {product_name},{hs_code},{country}
+처리 : 해당 국가의 관세율 및 수입 규제 조회
+출력 : {
+    "관세율" : "", 
+    "규제사항" : [ ],
+    "필요서류" : [ ]
+}</pre>
+                </div>
+            </div>
+
+            <table>
+                <tr><th>유형</th><th>중심</th><th>재사용</th><th>유연성</th></tr>
+                <tr><td>서술형</td><td>맥락</td><td>낮음</td><td>높음</td></tr>
+                <tr><td>지침형</td><td>규칙</td><td>중간</td><td>중간</td></tr>
+                <tr><td>함수형</td><td>구조</td><td>높음</td><td>낮음</td></tr>
+            </table>
+        </section>
+
+        <section id="sec2" class="searchable">
+            <h2>2. 가장 기본적인 제로샷, 원샷, 퓨샷 프롬프팅</h2>
+            
+            <h3>제로샷 (Zero-shot)</h3>
+            <p>예시 없이 바로 지시하는 방식, 아무 정보도 주지 않은 상태</p>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre class="prompt-box">예) 이 제품 정말 맘에들어
+강아지에 대해서 설명해주세요</pre>
+            </div>
+
+            <h3>원샷 (One-shot)</h3>
+            <p>예시를 1개 제공하는 방식</p>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre class="prompt-box">예) 감정을 분류해 주세요
+예시) "배송이 너무 늦어서 실망했어요"
+감정 : 부정
+
+이 제품 정말 맘에 들어요
+감정 : </pre>
+            </div>
+
+            <h3>퓨샷 (Few-shot)</h3>
+            <p>예시를 2개 이상 제공하는 방식 / 몇가지 예시를 주고 답을 유도하는 방식이다.</p>
+            <details>
+                <summary>퓨샷 예시 전체 보기 (감정 분류 / HS Code)</summary>
+                <div class="accordion-body">
+                    <div class="prompt-container">
+                        <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                        <pre class="prompt-box">예) 감정을 분류해주세요(긍정/부정/중립)
+예시)
+텍스트 : "배송이 너무 늦어서 실망이야" - > 부정
+텍스트 : "그냥 평범한 제품이야" - > 중립
+텍스트 : "역대급 만족이야" - > 긍정
+텍스트 : "품질은 좋은데 가격이 비싸요" - > 중립
+
+텍스트 : "이 제품 정말 맘에 들어"
+감정 :
+
+예) HS Code를 분류해주세요
+예시)
+품목 : "면으로 만든 남성용 티셔츠" -> 6109.10
+품목 : "폴리에스테르 소재 여성 블라우스" -> 6206.40
+품목 : "아동용 데님 바지" -> 6203.42
+
+품목 : "울 혼방 남성 재킷" -> 
+HS Code</pre>
+                    </div>
+                </div>
+            </details>
+        </section>
+
+        <section id="sec3" class="searchable">
+            <h2>3. 페르소나 패턴 (전문성 부여)</h2>
+            <p>예) 같은 질문 : 이 계약서 검토해줘<br>
+            - 페르소나 없음 : 일반적인 설명<br>
+            - 변호사 : 법적 리스크 중심 분석<br>
+            - CFO : 재무조건, 수익성 관련 분석<br>
+            - 신입사원 : 쉽고 친절한 설명</p>
+
+            <div style="background: rgba(157, 78, 221, 0.1); border-left: 4px solid var(--benz-purple); padding: 1rem; margin-bottom: 1rem;">
+                <strong>좋은 페르소나 4가지 요소</strong><br>
+                당신은 [역할]입니다.<br>
+                [경력/배경]을 가지고 있으며<br>
+                [전문 분야]에 특화되어 있습니다.<br>
+                [말투/태도]로 응답하세요
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab(event, 'pers-trade')">관세사 예시</button>
+                <button class="tab-btn" onclick="switchTab(event, 'pers-it')">비평가 개발자 예시</button>
+                <button class="tab-btn" onclick="switchTab(event, 'pers-couns')">상담사 예시</button>
+                <button class="tab-btn" onclick="switchTab(event, 'pers-multi')">멀티 페르소나</button>
+            </div>
+            
+            <div id="pers-trade" class="tab-content active">
+                <div class="prompt-container"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre class="prompt-box">예) 관세사 페르소나
+"당신은 20년 경력의 [관세사]입니다.
+[FTA협정세율과 원산지 규정의 전문가]로
+[중소기업 무역 담당자에게 복잡한 내용을 쉽고, 실용적으로 설명하는 것]이 특기입니다."</pre></div>
+            </div>
+            <div id="pers-it" class="tab-content">
+                <div class="prompt-container"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre class="prompt-box">예) 비평가 페르소나
+"당신은 까다로운 개발자입니다.
+코드 리뷰시 성능, 보안, 가독성을 엄격하게 평가하며
+칭찬보다 개선점을 먼저 지적하는 스타일입니다."</pre></div>
+            </div>
+            <div id="pers-couns" class="tab-content">
+                <div class="prompt-container"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre class="prompt-box">예) 상담사 페르소나
+"당신은 </pre></div>
+            </div>
+            <div id="pers-multi" class="tab-content">
+                <div class="prompt-container"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre class="prompt-box">멀티 페르소나
+예) 다음 3명의 전문가 입장에서 우리 제품의 동남아 수출 전략을 분석해 주세요.
+- 김부장(영업 15년, 낙관적, 현장중심)
+- 이박사(시장조사 전문, 데이터 중심, 신중함)
+- 박대표(스타트업 창업가, 속도 중심, 리스크 감수)
+각자의 관점에서 찬반 의견을 제시하세요.</pre></div>
+            </div>
+        </section>
+
+        <section id="sec4" class="searchable">
+            <h2>4. 마크다운을 이용한 읽기 쉽고 명료한 프롬프트 작성법</h2>
+            <p>AI는 텍스트를 구조적으로 파싱(쪼개기)합니다.<br>
+            마크다운을 이용하면 역할, 조건, 출력형태가 명확히 구분되어 더 정확하고 일관된 응답을 이끌어냅니다.<br>
+            <span style="color:var(--benz-pink);">💡 핵심: AI는 "지능이 낮은 초등학생"이다. 설명을 잘하면 잘 대답하고, 설명을 잘 못해주면 바보 같은 대답이 돌아온다.</span></p>
+
+            <details>
+                <summary>핵심요소 6가지 상세보기</summary>
+                <div class="accordion-body">
+                    <p>1) <strong># 헤더</strong> : 프롬프트의 뼈대</p>
+                    <pre class="prompt-box"># 역할 : 당신은 10년 경력의 관세사입니다.
+# 작업 : HS code 분류하세요
+# 출력형식 : JSON으로 반환</pre>
+
+                    <p>2) <strong>''', """ : 코드 블럭</strong> - 입력 데이터 격리 (AI가 지시문과 데이터를 혼동하지 않도록 분리)</p>
+                    <pre class="prompt-box">예) 아래 python 코드의 버그를 찾아주세요
+''' python
+def calculate_tax(price) : 
+    return price * 0.1
+    print("완료")   # 버그위치
+'''</pre>
+
+                    <p>3) <strong>> 인용문</strong> - 핵심강조 (절대 지켜야할 조건이나 중요한 맥락 부각)</p>
+                    <pre class="prompt-box">> 반드시 한국어로만 답변하세요
+> 추측성 내용은 포함하지 마세요</pre>
+
+                    <p>4) <strong>- 목록</strong> - 조건과 제약 나열</p>
+                    <pre class="prompt-box">## 제약조건
+- 답변은 500자 이내
+- 전문용어 사용시 괄호 안에 설명 추가
+- 불확실한 내용은 "확인 필요"로 표시
+- 예시는 반드시 무역 도메인에서 선택</pre>
+
+                    <p>5) <strong>| 표</strong> - 입출력에 예시 구조</p>
+                    <pre class="prompt-box">## 예시
+| 입력 품목 | HS Code | 관세율 |
+| 면티셔츠 | 6109.10 | 13% |   
+| 블라우스 | 6109.10 | 13% |   
+| 데님바지 | 6109.10 | 13% |</pre>
+
+                    <p>6) <strong>**굵게** / *기울임*</strong> - 변수와 강조</p>
+                    <pre class="prompt-box">**[분석대상]**에 대해 *반드시* 아래 순서대로 분석하세요</pre>
+                </div>
+            </details>
+
+            <h3>마크다운을 활용(6가지)해서 만드는 통합 예시</h3>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre class="prompt-box"># 역할
+당신은 중소기업 수출 컨설턴트 입니다
+FTA 활용과 원산지 증명 전문가 입니다
+
+# 작업
+아래 수출 품목에 대한 FTA 적용 가능 여부를 분석하세요
+'''
+품목명 : 스테인리스 주방용품
+수출국 : 한국
+수입국 : 베트남
+'''
+
+# 분석기준
+- 한-아세안 FTA 협정세율 적용여부
+- 원산지 결정 기준 충족 여부
+- 필요 서류 목록
+
+# 제약 조건
+> 확실하지 않은 세율은 반드시 "세관 확인 필요"로 표기
+
+# 출력 형식
+''' JSON
+{
+    "FTA_적용" : TRUE/FALSE,
+    "협정세율" : "",
+    "일반세율" : "",
+    "필요서류" : []
+}
+'''</pre>
+            </div>
+            <p style="text-align: right; color: var(--benz-blue);">역할 / 작업 / 입력 / 제약 / 출력</p>
+        </section>
+
+        <section id="sec5" class="searchable">
+            <h2>5. 글의 표현 강도와 중요도를 조절하는 방법</h2>
+            <p>말해주세요 -> 설명해주세요 -></p>
+            <p>예) <em>보안에 신경써주세요</em> ⬇️ <strong>취약점을 반드시 점검하고 발견 시 즉시 수정 방안을 제시하세요</strong></p>
+            
+            <h3>강도 단계별 표현</h3>
+            <ul>
+                <li><strong>1단계(권장) :</strong> 가능하면, 되도록, ~하는 편이 좋습니다</li>
+                <li><strong>2단계(일반) :</strong> ~하세요, ~ 해주세요</li>
+                <li><strong>3단계(강조) :</strong> 반드시, 꼭, 항상</li>
+                <li><strong>4단계(절대) :</strong> 절대로, 어떤 경우에도, 예외없이</li>
+            </ul>
+            <pre class="prompt-box">예)
+가능하면 한국어로 답변해주세요
+반드시 한국어로 답변하세요
+어떤 경우에도 영어를 사용하지 마세요</pre>
+
+            <h3>우선순위 시각화</h3>
+            <p><span class="badge critical">🔴 최우선(절대조건)</span><br>
+            - 개인 정보 절대 출력 하지 않는다<br>
+            - 사실과 다른 내용을 생성하지 않는다</p>
+            
+            <p><strong>중요(일반조건)</strong><br>
+            - 답변은 500자 이내로 작성<br>
+            - 전문용어 괄호 설명 추가</p>
+
+            <p><span class="badge recommend">🔵 선택(권장조건)</span><br>
+            - 가능하면 실제 사례를 포함<br>
+            - 표나 목록을 활용하면 더 좋다</p>
+        </section>
+
+        <section id="sec6" class="searchable">
+            <h2>6. 톤(말투)을 지정하면 전혀 다른 응답이 생성된다</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre class="prompt-box">예)
+#입력
+[원본]= 올해 들어 회사는 큰 변화를 맞이 했습니다. 이제 새로운 전략과 목표를 설정하고, 모든 직원이 함께 나아가려고 합니다.
+
+#처리
+다음 각각의 톤에 맞춰 [원본]글을 수정해주세요.
+1) 유머러스한
+2) 감정적인
+3) 따뜻한
+4) 아이러니한
+5) 로맨틱한</pre>
+            </div>
+
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre class="prompt-box"># 보고서 작성 지시
+## 요약 섹션
+   임원 보고용 : 3줄 이내, 숫자 중심, 공식적 톤
+
+## 본문 섹션
+   실무자용 : 단계별 설명, 기술적이고 구체적 톤
+
+## 결론 섹션
+   전체 독자용 : 행동유도, 긍정적이고 적극적인 톤</pre>
+            </div>
+        </section>
+
+        <section id="sec7" class="searchable">
+            <h2>7. 대안 접근법 패턴 : 모든 대안과 해결책 찾아보기</h2>
+            <p>일반 프롬프트 -> 어떻게 하면 좋을까? -> AI가 임의로 하나 선택<br>
+            <strong>대안 패턴 :</strong> 모든 방법을 나열하고 각각의 장단점을 비교해줘 -> 선택권이 사람에게 돌아옴</p>
+            <pre class="prompt-box">예) python을 엑셀 파일로 읽고 싶어
+openpyxl 사용 (단순 선택)
+
+[대안패턴 적용]
+방법 1 : pandas
+방법 2 : openpyxl
+방법 3 : xlrd(예전 방법)
+방법 4 : CSV로 변환</pre>
+
+            <details>
+                <summary>패턴 유형 1~4 예시 전체 보기</summary>
+                <div class="accordion-body">
+                    <div class="prompt-container"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre class="prompt-box">패턴 유형 1 : 단순 나열형
+#지시
+    아래 문제를 해결하는 방법을 최소 4가지를 제시하세요
+    각 방법은 아래 형식으로 작성하세요
+##방법 {번호}:{이름}
+- 핵심원리 : {한줄}
+- 적합한 상황 : {언제 쓰면 좋은가}
+- 단점 : {주의 할 점}
+- 난이도 : {초급/중급/고급}
+#문제
+수출통관 서류 자동으로 생성하고 싶습니다</pre></div>
+
+                    <div class="prompt-container"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre class="prompt-box">패턴 유형 2 : 축 기반 비교형
+아래 4 가지 방법을 다른 기준으로 비교 분석하세요
+평가 기준 : 
+   - 개발 속도(빠름/보통/느림)
+   - 유지 보수 난이도(쉬움/보통/어려움)
+   - 비용(무료/저비용/고비용)
+   - 확장성(높음/보통/낮음)
+비교대상 : FASTAPI, JANGO, FLASK, NODE.JS EXPRESS
+용도 : 무역 데이터 처리 REST API 서버</pre></div>
+
+                    <div class="prompt-container"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre class="prompt-box">패턴 유형 3 : 상황별 분기형
+아래 상황별 가장 적합한 데이터베이스를 추천해주세요
+각 상황은 독립적으로 판단 하세요
+상황 A : 스타트업, 개발자 1명, 빠른 MVP
+상황 B : 무역데이터 10년치, 복잡한 통계 쿼리
+상황 C : 실시간 환율, 가격 데이터, 초당 1000건 업데이트
+상황 D : 문서 형태의 비정형 통관 데이터 저장
+
+각 상황에 대해 :
+1순위 추천 : {DB명} - {이유 한줄 설명}
+2순위 추천 : {DB명} - {이유 한줄 설명}
+3순위 추천 : {DB명} - {이유 한줄 설명}</pre></div>
+
+                    <div class="prompt-container"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre class="prompt-box">패턴 유형 4 : 역발상 대안형
+아래 문제에 대해 일반적인 해결책 뿐 아니라
+"하지 않는" 선택지, "문제 자체를 재정의", "전문가가 사용하지 않을 방법","우회 방법"등의 방법도 대안으로 포함하여
+총 5가지를 제시하세요
+문제 : 수입 통관 처리 시간이 너무 오래 걸린다</pre></div>
+                </div>
+            </details>
+        </section>
+
+        <section id="sec8" class="searchable">
+            <h2>8. 이용자 페르소나 패턴</h2>
+            <p>대상에 특화된 맞춤형 답변 유도하기.<br>
+            이용자 페르소나 -> 이 답을 듣는 사람은 ~~ 입니다.</p>
+            <p>질문 : "블록체인"이 무역금융에 어떻게 활용되나요?<br>
+            이용자 : 무역을 처음 배우는 대학생 / 중소기업 수출 담당 팀장 / 금융기관 IT 의사결정자</p>
+
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre class="prompt-box"># 이용자 정보
+- 직책 : 중소기업 대표(제조업, 직원 30명)
+- 수출경험 : 국내 영업만 10년, 해외 수출 경험 없음
+- 관심사 : 리스크 최소화, 빠른 실행
+- 우려 : "복잡하고 어려울 것 같다"는 막연한 두려움
+- 시간 : 바빠서 긴 글을 읽지 않음
+
+# 지시
+위의 이용자에게 첫 수출 준비 3단계를 설명하세요
+전문 용어는 최소화하고, 각 단계는 3줄 이내로 작성</pre>
+            </div>
+
+            <div style="background: rgba(0, 180, 216, 0.1); border-left: 4px solid var(--benz-blue); padding: 1rem; margin-top: 1rem;">
+                <strong>이용자 페르소나 설계 체크리스트</strong>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #ccc;">
+                    <li>이 사람의 직업과 역할은?</li>
+                    <li>이 주제에 대한 사전 지식은 어느 정도인가?</li>
+                    <li>이 정보로 무엇을 결정하거나 실행할 예정인가?</li>
+                    <li>지금 어떤 상태인가(급함/여유)</li>
+                    <li>얼마나 긴 답변을 읽을 여유가 있는가?</li>
+                    <li>가장 두려워하는 것은? 가장 원하는 것은?</li>
+                    <li>절대 쓰면 안되는 언어나 표현이 있나?</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="sec9" class="searchable">
+            <h2>9. 레시피 패턴 : 목표달성을 위한 작업을 단계적으로 받는 방법</h2>
+            <p>구체적인 순서를 요구할 때.<br>
+            일반 질문 : 수출 자동화 어떻게 해? (개념설명, 두루뭉실)<br>
+            레시피 패턴 : 수출 자동화를 위한 단계별 절차를 주세요 (순서있는 행동 지침)</p>
+            <p style="color:var(--benz-pink);">******** 다음에 무엇을 해야할지 고민하는 시간을 줄이자</p>
+
+            <details>
+                <summary>레시피 패턴 예시 열어보기</summary>
+                <div class="accordion-body">
+                    <div class="prompt-container"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre class="prompt-box">1) 기본 단계
+#목표
+    python 초보자가 무역 hs code 자동 분류 프로그램을 만들기
+#현재 상태
+    - python 설치만 되어 있음
+    - 프로그램 경험 없음
+    - 엑셀로 품목 데이터 500개 보유
+#요청
+    위의 목표를 달성하기 위한 단계별 레시피를 작성하세요
+    각 단계는 아래 형식으로 작성하세요
+## STEP{번호} : {단계명}
+    - 할 일 : {구체적 행동}
+    - 소요 시간 : {예상 기간}
+    - 완료 기준 : {이건이 되면 다음으로}
+    - 주의사항 : {흔한 실수}</pre></div>
+
+                    <div class="prompt-container"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre class="prompt-box">예)
+무역 게약 클레임 처리 절차를 단계별로 작성하세요
+단, 각 단계에서 발생할 수 있는 분기 상황도 포함하세요
+형식 : 
+    step1. {행동}
+        - 정상 : {이 결과면 다음 단계로}
+        - 이상 : {이 결과면 어떻게 대응}
+
+예)
+신규 수출 거래처와의 첫 계약 체결을 위한 실행 체크리스트 작성
+형식 : 
+   [ ]{행동} - {이유 또는 주의사항}</pre></div>
+
+                    <pre class="prompt-box">*** 병렬 레시피	
+1일		2일		3일</pre>
+                </div>
+            </details>
+        </section>
+
+        <section id="sec10" class="searchable">
+            <h2>10. 뒤집힌 상호작용 패턴 : AI가 묻고 사용자가 답한다</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre class="prompt-box">예)
+# 방법 1 : 질문 먼저, 답은 나중
+제가 원하는 결과물은 {목표}입니다.
+바로 만들지 말고, 먼저 필요한 정보를 질문해 주세요
+모든 정보가 수집된 후 결과물을 작성하세요
+
+# 방법 2 : 한번에 하나씩
+제가 원하는 결과물은{목표}입니다.
+한번에 하나의 질문만 하세요
+제가 답하면 다음 질문으로 넘어가고
+충분한 정보가 모이면 결과물을 작성하세요</pre>
+            </div>
+            
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre class="prompt-box">** 수출 제안서를 작성해주세요
+바로 작성하지 말고, 먼저 아래 항목들을 질문해서
+제 답변을 모두 수집한 후 작성하세요
+수집이 필요한 정보 : 
+   - 제품정보
+   - 타겟 바이어
+   - 핵심 강점
+   - 가격 정책
+   - 납기 조건
+
+*** python 학습 계획서를 만들어주세요
+단 한번에 하나의 질문만 하고
+제 답변을 들은 뒤 다음 질문으로 넘어가세요
+5~7개 질문이 끝나면 맞춤형 학습계획서를 작성해주세요</pre>
+            </div>
+        </section>
+
+        <section id="sec11" class="searchable">
+            <h2>11. 인지 검증자 패턴 : 복잡한 문제를 더 잘 다루는 방법</h2>
+            <p>일반 패턴 : 복잡한 질문 입력 -> 즉각대답(오류, 누락 가능성 높음)<br>
+            인지 검증자 패턴 : 복잡한 질문 입력 -> AI가 하위 질문을 분해 -> 각 질문을 순서대로 검증 -> 검증된 답을 통합</p>
+
+            <details>
+                <summary>인지 검증자 패턴 예시 보기</summary>
+                <div class="accordion-body">
+                    <p>** 복잡한 질문 : 우리 회사가 베트남에 생산법인을 설립하면 세금, 인력, 물류 측면에서 유리한가?</p>
+                    <div class="prompt-container"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre class="prompt-box">먼저 이 질문을 풀기 위한 하위 질문을 도출하고
+각각을 검증한 뒤 통합된 판단을 내립니다
+
+# 방법 1 :  명시적 분해 요청
+   아래 질문에 바로 답하지 말고 먼저 이 질문을 정확히 답하기 위해 필요한 하위 질문 목록을 만들고
+   각 하위 질문에 순서대로 답한 뒤 최종 통합 답변을 제시하세요
+   질문 : 
+
+# 방법 2 :  전문가 검증 방식
+   {전문 분야} 전문가처럼 이 문제를 다루세요
+   확신이 없는 부분은 가정으로 명시하고
+   각 판단의 근거를 함께 제시하면서
+   단계적으로 결론에 도달하세요</pre></div>
+
+                    <div class="prompt-container"><button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre class="prompt-box">******
+아래 질문에 바로 답하지 말고 먼저 이 질문을 정확히 답하기 위해 필요한 질문을 3~5개 도출하세요.
+각 하위 질문에 순서대로 답한 뒤 최종 통합 답변을 제시하세요.
+질문 : python으로 무역 데이터 자동화를 구축할 때 클라우드 서버가 필요한가요?</pre></div>
+                </div>
+            </details>
+        </section>
+
+        <footer style="margin-top: 5rem; padding: 2rem 0; border-top: 1px solid rgba(255,255,255,0.1); color: #666; font-size: 0.9rem; text-align: center;">
+            <p>Built with 20 Years of Craftsmanship.</p>
+        </footer>
+    </main>
+
+    <div id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</div>
+
+    <script>
+        // 1. Scroll Progress & Navigation Highlight
+        const progressBar = document.getElementById('progress-bar');
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const backToTopBtn = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', () => {
+            // Progress Bar
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            progressBar.style.width = (winScroll / height) * 100 + "%";
+
+            // Back to top button
+            if (winScroll > 500) backToTopBtn.style.display = "flex";
+            else backToTopBtn.style.display = "none";
+
+            // Nav Highlighting
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) current = section.getAttribute('id');
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) link.classList.add('active');
+            });
+        });
+
+        // 2. Mobile Sidebar Toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // 3. Tab Switching
+        function switchTab(evt, tabId) {
+            let container = evt.currentTarget.parentElement.parentElement;
+            let tabs = container.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            let btns = container.querySelectorAll('.tab-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        // 4. Copy to Clipboard
+        function copyPrompt(btn) {
+            const textToCopy = btn.nextElementSibling.innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = "Copied!";
+                btn.style.background = "var(--benz-blue)";
+                setTimeout(() => { 
+                    btn.innerText = originalText; 
+                    btn.style.background = "rgba(255,255,255,0.1)";
+                }, 2000);
+            });
+        }
+
+        // 5. Quick Search Filtering
+        function filterContent() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let items = document.querySelectorAll('.searchable');
+            items.forEach(item => {
+                let text = item.innerText.toLowerCase();
+                item.style.display = text.includes(input) ? "block" : "none";
+            });
+        }
+
+        // 6. Variable Auto-Highlighting (Regex)
+        document.addEventListener("DOMContentLoaded", () => {
+            const promptBoxes = document.querySelectorAll('.prompt-box');
+            promptBoxes.forEach(box => {
+                let html = box.innerHTML;
+                // Match {text} or [text]
+                html = html.replace(/(\{[^{}]+\}|\[[^\[\]]+\])/g, '<span class="var-highlight">$1</span>');
+                box.innerHTML = html;
+            });
+        });
+    </script>
+</body>
+</html>
