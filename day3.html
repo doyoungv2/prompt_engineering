@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프롬프트 엔지니어링 마스터 가이드</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="progress-bar"></div>
+
+    <div class="mobile-header">
+        <div class="brand" style="margin:0; padding:0; border:none;">PROMPT MASTER</div>
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    </div>
+
+    <aside id="sidebar">
+        <div class="brand">PROMPT MASTER</div>
+        <input type="text" id="searchInput" class="search-box" placeholder="빠른 탐색 (ex. 페르소나)" onkeyup="filterContent()">
+        
+        <nav>
+            <div class="nav-category">기초 및 구조화</div>
+            <ul>
+                <li><a href="index.html" class="nav-link">1. 프롬프트의 기초</a></li>
+                <li><a href="index.html#sec2" class="nav-link">2. 샷(Shot) 기법</a></li>
+                <li><a href="index.html#sec3" class="nav-link">3. 페르소나 패턴</a></li>
+                <li><a href="index.html#sec4" class="nav-link">4. 마크다운 작성법</a></li>
+            </ul>
+            <div class="nav-category">제어 및 고급 패턴</div>
+            <ul>
+                <li><a href="day2.html" class="nav-link">5. 강도 및 중요도</a></li>
+                <li><a href="day2.html#sec6" class="nav-link">6. 톤(말투) 지정</a></li>
+                <li><a href="day2.html#sec7" class="nav-link">7. 대안 접근법</a></li>
+                <li><a href="day2.html#sec8" class="nav-link">8. 이용자 페르소나</a></li>
+                <li><a href="day2.html#sec9" class="nav-link">9. 레시피 패턴</a></li>
+                <li><a href="day2.html#sec10" class="nav-link">10. 상호작용 패턴</a></li>
+                <li><a href="day2.html#sec11" class="nav-link">11. 인지 검증자 패턴</a></li>
+            </ul>
+            <div class="nav-category">실전 및 프레임워크</div>
+            <ul>
+                <li><a href="day3.html" class="nav-link">12. 게임 플레이 패턴</a></li>
+                <li><a href="day3.html#sec13" class="nav-link">13. 질문 개선 패턴</a></li>
+                <li><a href="day3.html#sec14" class="nav-link">14. 팩트체크 목록 패턴</a></li>
+                <li><a href="day3.html#sec15" class="nav-link">15. 메타언어 생성 패턴</a></li>
+                <li><a href="day3.html#sec16" class="nav-link">16. 리플렉션 패턴</a></li>
+                <li><a href="day3.html#sec17" class="nav-link">17. 아웃라인 확장 패턴</a></li>
+                <li><a href="day3.html#sec18" class="nav-link">18. 컨텍스트 관리자</a></li>
+                <li><a href="day3.html#sec19" class="nav-link">19. 무한 생성 패턴</a></li>
+                <li><a href="day3.html#sec20" class="nav-link">20. 5W1H 프레임워크</a></li>
+                <li><a href="day3.html#sec21" class="nav-link">21. CO-STAR</a></li>
+                <li><a href="day3.html#sec22" class="nav-link">22. FOCUS</a></li>
+                <li><a href="day3.html#sec23" class="nav-link">23. ROSES</a></li>
+                <li><a href="day3.html#sec24" class="nav-link">24. RISEN</a></li>
+                <li><a href="day3.html#sec25" class="nav-link">25. BAB</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main id="main-content">
+        <header>
+            <p style="color: var(--benz-pink); font-weight: bold; letter-spacing: 2px;">REAL WORLD MASTERPIECE</p>
+            <h1>실전 프롬프트 패턴과 프레임워크</h1>
+            <p>실제 비즈니스와 창의적 작업에서 즉시 활용 가능한 전문가의 설계 기법입니다.</p>
+        </header>
+
+        <section id="sec12" class="searchable">
+            <h2>12. 게임 플레이 패턴 : 지금부터 게임을 시작하지!</h2>
+            
+            <h3>외계인 침공 게임 예시</h3>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>#입력
+[게임 목적]
+- 외계인의 침략 계획을 밝혀내고 저지해서 지구를 구하는 게임
+
+[플레이어가 해야할 일]
+- 지구의 여러 도시와 외계인 기지를 탐험한다
+- 다양한 NPC들과 상호 작용하고 정보를 수집한다
+- 논리적 사고를 통해 퍼즐을 해결한다
+- 외계인 전투에 참여해 적들을 물리친다
+
+[플레이어의 특징]
+- 영웅적이고 용감하고, 항상 지구를 구하기 위해 최선을 다한다
+
+[도전과 장애물]
+- 도시에 위험한 외계 생명체와 마주쳐 싸운다
+- 외계인 기지에 설치된 위험한 함정을 해쳐나간다
+- 외계인 지도자와 대결해야 한다
+
+[게임 진행 조건]
+- 적에게 공격당하면 전투에 참여한다
+- 수집한 아이템을 사용하여장애물을 극복한다
+- NPC와 상호작용할 때 대화 옵션을 선택한다
+- 게임 도중 내리는 선택이 게임 이야기와 진행에 영향을 미친다
+- 상태창을 통해 게임 진행 상태가 표시된다
+- 반드시 한장면씩 진행한다
+
+[게임 엔딩]
+- 외계인 본거지에 도달하고 최후의 전투에 참여한다
+
+#처리
+당신은 “ 텍스트 기반 어드벤쳐 게임”입니다. 당신의 목표는 외계인의 침략을 저지하고 지구를 안전하게 지키는 게임을대화 형식으로 제공하는 것입니다. 상단의 입력 내용을 게임 전체에 반영해 전체 구조를 설계합니다. 설계 내용을 설명할 필요는 없습니다. 대화 형식으로 지금부터 게임을 시작합니다.
+
+#출력
+[상태창]
+[장면설명]
+[선택지]</pre>
+            </div>
+
+            <h3>유니콘 나라 스토리텔링 게임 예시</h3>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>#입력
+[주인공] = 서아
+[나이와 성별] = 4살 여아
+[스토리] = 반려견 밀크와 산책하던 주인공이 아기 유니콘을 만나 유니콘 나라를 여행하고 집으로 돌아옵니다
+
+#처리
+당신은 “스토리텔링 게임”입니다. 당신의 목표는 [주인공]이 등장하는 [스토리]를 가진 게임을 제공하는 것입니다. 이 게임은 [나이와 성별]을 대상으로 하며, 반드시 어떠한 폭력성도 없으며, 안전하고 행복한 결말을 맞이해야 합니다. 전체 게임은 5분 이내에 완료됩니다. 각 장면에는 선택지가 제공되고, 플레이어가 선택할 때까지 대기 합니다. 반드시 한장면씩 진행 합니다. 이러한 규칙을 기반으로 당신의 상상력을 발휘하여 게임의 전체 구조를 설계합니다. 설계 내용을 설명할 필요는 없습니다. 대화 형식으로 지금부터 게임을 시작합니다.</pre>
+            </div>
+        </section>
+
+        <section id="sec13" class="searchable">
+            <h2>13. 질문 개선 패턴: 질문을 질문하기</h2>
+            <p>AI에게 사용자의 질문 자체를 먼저 분석하고 더 나은 질문으로 업그레이드하도록 요청합니다.</p>
+
+            <div class="accordion-group">
+                <details>
+                    <summary>#방법 1 : 개선 후 답변 (단순 개선형)</summary>
+                    <div class="accordion-body">
+                        <div class="prompt-container">
+                            <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                            <pre>제 질문에 바로 답하지 말고, 
+먼저 제 질문을 분석해서 더 나은 질문으로 개선 해 주세요
+개선된 질문을 보여준 뒤, 그 질문에 스스로 답하세요
+
+예) 단순 개선형
+아래 질문을 더 명확하고 답변 가능한 형태로 개선한 뒤 개선된 질문으로 답변하세요
+개선한 이유도 한줄로 설명하세요
+질문 : “AI를 무역에 활용하려면 어떻게 해야하나요?”</pre>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>#방법 2 : 여러 버전 제시 (다방향 분기형)</summary>
+                    <div class="accordion-body">
+                        <div class="prompt-container">
+                            <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                            <pre>제 질문에 3가지 다른 방향으로 개선해 주세요
+각 버전이 어떤 목적에 맞는지 설명하고
+제가 선택하면 그 버전으로 답하세요
+
+예) 다방향 분기형
+제 질문을 3가지 다른 해석으로 개선해주세요 
+각 버전이 어떤 상황에 맞는 설명을 하고
+제가 고르면 그것으로 답하세요
+질문 : “수출 자동화 어떻게 시작하나요?”</pre>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>#방법 3 : 문제 진단 먼저 (전제 교정형)</summary>
+                    <div class="accordion-body">
+                        <div class="prompt-container">
+                            <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                            <pre>제 질문의 문제점(모호함, 잘못된 전제, 누락된 맥락)을 먼저 지적하고
+수정된 질문으로 답변하세요
+
+예) 전제 교정형
+제 질문에 잘못된 전제나 오해가 있으면 
+먼저 그것을 지적하고 교정된 질문으로 다시 물어봐 주세요
+그 다음 교정된 질문에 답하세요
+질문 : “ FTA를 쓰면 관세를 안내도 되나?”</pre>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <section id="sec14" class="searchable">
+            <h2>14. 팩트체크 목록 패턴 : 정보 검증을 위한 목록 작성하기</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>방법 1 : 답변 후 목록 추가
+아래 주제로 답변을 작성하세요
+답변 마지막에 반드시 아래 형식으로 팩트체크 목록을 추가하세요
+
+##팩트체크 필요항목
+> 항목 | 내용 | 검증방법 | 신뢰도 |
+|—— |———| ———-| ———-|</pre>
+            </div>
+
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>방법 2 : 답변 전 위험 예고
+답변을 작성하기 전에, 이 주제에 틀리기 쉬운 항목이 무엇인지 먼저 나열하세요
+그 항목을 특히 주의하며 답변을작성하고 마지막에 검증 목록을 제시하세요</pre>
+            </div>
+
+            <p><strong>1. 기본 검증 목록형</strong></p>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>아래 질문에 답변하세요
+답변 끝에 반드시 팩트 체크 목록을 작성하세요
+팩트체크 목록 형식 :
+- 🔴 반드시 확인 : 틀리면 큰 피해가 생기는 항목
+- 🔵 확인 권장 : 바뀔 가능성이 있는 항목
+- 🟡 참고 수준 : 대략적으로 맞지만 세부는 다를 수 있는 항목
+
+질문 : “한미 FTA 적용 시 원산지 증명서 발급 절차는?</pre>
+            </div>
+
+            <p><strong>2. 신뢰도 점수형</strong></p>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>아래 내용에 대한 답변을 하되 각 주요 사실에 신뢰도 점수(~10%)와 
+그 점수를 준 이유를 함께 표시하세요
+형식 : {사실내용} [신뢰도 : xx%] (이유 : ~)
+
+질문 : “베트남 수출 시 주요 인증 요건과 관세율은?</pre>
+            </div>
+        </section>
+
+        <section id="sec15" class="searchable">
+            <h2>15. 메타언어 생성 패턴 : AI와 대화하는 나만의 비밀 코드</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>지금 대화에서 아래의 명령어를 사용합니다
+각 명령어의 정의를 정확하게 기억하고 실행하세요
+
+/요약 = 핵심만 3줄, 전문용어 제거, 무역 실무자 기준, 결론 먼저 → 이유 순서로 작성
+/코드 = python 작성, 주석 한국어, 예외처리 포함, 실행 가능한 완성 코드, 설명없이 코드만 출력
+/비교 = 2~4개 대안을 표로 정리, 항목 : 장점, 단점, 비용, 난이도, 추천상황, 마지막 행에 종합 추천 추가
+
+사용자 : /요약 베트남 FTA활용방법 알려줘</pre>
+            </div>
+
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>#입력
+[독자] = 초등학생
+[단축어1] = “/유:[단어]:[개수]]”라고 요청하면, [단]에 대한 [독자]가 이해할 수 있는 유의어[개수]제공하고, 가장 추천하는 유의어를 알려주세요
+[단축어2] = “/반:[단어]:[개수]]”라고 요청하면, [단]에 대한 [독자]가 이해할 수 있는 반의어[개수]제공하고, 가장 추천하는 반의어를 알려주세요
+[단축어3] = “/유반:[단어]:[개수]]”라고 요청하면, [단축어1]과 [단축어2]를 동시에 수행해 주세요
+
+#처리
+당신은 “출판사 편집자”입니다
+당신은 [독자]대상의 교양 도서를 교정하고 있습니다
+상단의 내용을 기억하고, 내가 단축어를 제공하면 그에 따라 작업을 수행해 주세요
+내가 단축어를 제공할 때까지 대기합니다</pre>
+            </div>
+        </section>
+
+        <section id="sec16" class="searchable">
+            <h2>16. 리플렉션 패턴 : AI를 위한 자기성찰의 거울</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>아래 요청을처리하되 반드시 3단계로 진행하세요
+[초안]
+먼저 최선을 다해 답변하세요
+
+[자기 비평]
+방금 작성한 답변을 검토하고 아래에 솔직하게 답변하세요
+- 가장 약한부분은 어디인가요?
+- 빠뜨린 중요한 내용이 있나요?
+- 독자가 오해 할 수 있는 부분이 있는가?
+
+[개선본]
+비평을 반영한 최종답변을 작성하세요
+
+요청 : “python으로 엑셀 파일을 읽어 HS Code별 정렬하는 코드 작성”</pre>
+            </div>
+
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>아래 문서를 작성하고 완성후 5가지 기준으로 각각 10점 만점 평가를 수행하세요
+점수가 7점 미만인 항목은 반드시 개선하세요
+평가기준 : 1. 명확성 2. 완결성 3. 정확성 4. 실용성 5. 간결성
+요청 : “첫 수출을 준비하는 소기업을 위한 체크 리스트 작성”</pre>
+            </div>
+        </section>
+
+        <section id="sec17" class="searchable">
+            <h2>17. 아웃라인 확장 패턴 : 복잡한 주제와 아이디어의 구조화</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>#1단계 요청 : 대주제 아웃라인만
+주제 : “무역 실무자를 위한 python 자동화 8주 과정”
+#2단계 요청 : 선택한 파트 확장
+5주차 상세 아웃라인 확장하세요
+#3단계 요청 : 최소 단위까지 확장
+3일차 수업의 강의 스크립트와 실습 코드를 완성본으로 작성하세요</pre>
+            </div>
+
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>아래 교육과정의 아웃라인을 작성하되 각 파트에 전체 대비 비중(%)과 우선 순위를 함께 표시하세요
+조건 : 실습 코드가 이론 설명보다 비중이 높아야 한다
+주제 : “무역데이터 자동화 심화 과정”</pre>
+            </div>
+        </section>
+
+        <section id="sec18" class="searchable">
+            <h2>18. 컨텍스트 관리자 패턴 : AI 응답의 방향 조정하기</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>아래 조건은 이 대화 전체에 적용됩니다
+모든 답변은 이 컨텍스트 안에서만 이루어지세요
+##회사 상황
+- 업종 : 의료기기술 중소기업
+- 직업 : 30명, 무역팀 3명
+- 주요 수출국 : 미국(60%), 독일(30%), 기타(10%)
+- 연 수출액 : 약 50억원
+##기술 환경
+- 현재 시스템 : ERP없음, 엑셀 중심
+- 개발 인력 : 없음
+- IT 예산 : 월 100만원 이내
+#절대 제외 사항
+- 대규모 시스템 도입 제안(ERP)
+- 개발자 고용 전제의 솔루션
+- 6개월 이상 구축 기간이 필요한 방안</pre>
+            </div>
+        </section>
+
+        <section id="sec19" class="searchable">
+            <h2>19. 무한 생성 패턴 : 무한한 맞춤형 출력 생성하기</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>** 무역 이메일 생성기
+고정 프레임 : “[수신자 유형]에게 [목적]을 전달하는 영문 이메일”
+변수 : {수신자}, {목적}, {톤}
+생성 규칙 : 3단락 구조, 제목 포함 150단어 이내</pre>
+            </div>
+        </section>
+
+        <section id="sec20" class="searchable">
+            <h2>20. 5W1H 프레임 워크</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>#입력
+[who] = 중소 제조업체(직원 30명)
+[what] = 친환경 포장재를 유럽 시장에 수출
+[when] = 2026년 하반기부터 본격 수출 시작
+[where] = 독일, 프랑스, 네덜란드를 1차 타겟
+[why] = EU의 플라스틱 규제 강화로 친환경 포장재 수요 급증
+[how] = 현재 유통사 파트너십을 통한 B2B 판매
+
+#처리
+당신은 “EU 시장 진출 전문 컨설턴트”입니다
+상단의 5W1H 정보를바탕으로 다음을 작성하세요
+1. 시장 진입 전략(3가지 옵션 비교)
+2. 필수 인증 및 규제 대응(CE마크 등)
+3. 바이어 발굴 및 파트너십 전략
+4. 6개월 실행 로드맵
+
+#출력
+[전략보고서] = 각 섹션별 300~500단어</pre>
+            </div>
+        </section>
+
+        <section id="sec21" class="searchable">
+            <h2>21. CO-STAR 프레임워크 : 바이어 설득 제안서</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>Context : 미국 대형 유통사가 K-뷰티 제품 소싱을 고려중입니다. 현재 중국 공급사와 거래중이나, 품질 이슈로 대안을 찾고 있습니다.
+Objective : 우리 회사를 신규 공급사로 선정하도록 설득하는 제안서를 작성하세요
+Style : 전문적이고 데이터 기반의 비즈니스 문서
+Tone : 자신감 있으면서도 파트너십을 강조하는 협력적 톤
+Audience : 미국 유통사의 소싱 디렉터(40대, 15년 경력)
+
+Response : 
+- 영문 Business Proposal 형식
+- 총 800~1000단어
+- Executive Summary, Company Profile, Product Advantages, Quality Assurance, Pricing & Terms, Next Steps 포함
+- 품질 비교 데이터 및 인증서 리스트 포함</pre>
+            </div>
+        </section>
+
+        <section id="sec22" class="searchable">
+            <h2>22. FOCUS 프레임워크 : 바이어 발굴 캠페인</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>Function : 당신은 B2B 마케팅 전문가 입니다
+신규 바이어 발굴을 위한 Linkedin 메세지를 작성하세요
+Objective: 타켓 바이어의 답장률을 30%이상으로 높이는 것이 목적 
+Context : 우리 회사는 산업용 센서를 제조하며, 독일 자동차 부품 업체를 타겟팅 합니다
+Utility : Linkedin 이메일 캠페인에 활용됩니다
+Specifications : 
+- 메세지 길이 : 150~200 단어
+- 영문작성
+- 3가지 버전(공식적/친근함/긴급)</pre>
+            </div>
+        </section>
+
+        <section id="sec23" class="searchable">
+            <h2>23. ROSES 프레임워크 : 계약 협상 전략</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>Role : 당신은 국제 무역 협상 전문가 입니다
+Objective : 미국 바이어와의 가격 협상의 우리 목표가 FOB $50/unit을 달성해야 합니다
+Scenario :
+- 바이어 첫 제시가 : $40/unit
+- 우리 희망가 : $50/unit
+- 시장 평균가 : $45/unit
+- 바이어 연간 예상물량 : 50,000 units
+- 경쟁사 중국 업체 제시가 : $42/unit
+
+Expected Solution : 
+- 협상 전략 3단계
+- 각 단계별 제시가격 및 조건
+- 양보 vs 가치 강조 밸런스
+- 최종 합의 시나리오
+
+Steps : 
+1. 현재 상황분석
+2. 가치 제안 준비(품질, 납기, 인증)
+3. 1차 협상 : 품질 차별화 강조 # $49 제시
+4. 2차 협상 : 물량 증가 시 단계별 할인 제안($55-$53-$50)
+5. 계약서 작성 및 후속 조치
+
+#출력
+[협상 스크립트] = 각 단계별 대화 예시(영문)
+[체크리스트] = 협상 전 준비사항</pre>
+            </div>
+        </section>
+
+        <section id="sec24" class="searchable">
+            <h2>24. RISEN 프레임워크 : 무역 분쟁 해결</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>Role : 
+Instructions : 
+Steps : 
+Expectations : 
+Narrowing : </pre>
+            </div>
+        </section>
+
+        <section id="sec25" class="searchable">
+            <h2>25. BAB 프레임 워크 : 수출 성공 스토리</h2>
+            <div class="prompt-container">
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                <pre>Before : 
+After : 
+Bridge : </pre>
+            </div>
+        </section>
+
+        <footer style="margin-top: 5rem; padding: 2rem 0; border-top: 1px solid #eee; color: #999; font-size: 0.9rem; text-align: center;">
+            <p>Built with 20 Years of Craftsmanship. All Rights Reserved.</p>
+        </footer>
+    </main>
+    <div id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</div>
+    <script src="js/script.js"></script>
+</body>
+</html>
