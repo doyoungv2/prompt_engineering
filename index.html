@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>프롬프트 엔지니어링 마스터 가이드</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 인트로 섹션을 위한 추가 스타일 (기존 UI 유지하며 보완) */
+        .intro-box {
+            background-color: #f8faff;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+        .intro-box h2 { color: #2d3748; margin-top: 0; border: none; padding: 0; }
+        .intro-box h3 { color: #4a5568; margin-top: 25px; border-bottom: 2px solid #edf2f7; padding-bottom: 10px; }
+        .example-card {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        .example-card.bad { background-color: #fff5f5; border-left: 5px solid #feb2b2; }
+        .example-card.good { background-color: #f0fff4; border-left: 5px solid #9ae6b4; }
+        .example-card strong { color: #2d3748; }
+        .intro-box em { font-style: normal; background: linear-gradient(120deg, #e9d5ff 0%, #e9d5ff 100%); background-repeat: no-repeat; background-size: 100% 40%; background-position: 0 80%; }
+    </style>
 </head>
 <body>
     <div id="progress-bar"></div>
@@ -19,6 +42,10 @@
         <input type="text" id="searchInput" class="search-box" placeholder="빠른 탐색 (ex. 페르소나)" onkeyup="filterContent()">
         
         <nav>
+            <div class="nav-category">안내</div>
+            <ul>
+                <li><a href="#intro" class="nav-link" style="font-weight: bold; color: var(--benz-purple);">👉 시작하기 (초보자 필독)</a></li>
+            </ul>
             <div class="nav-category">기초 및 구조화</div>
             <ul>
                 <li><a href="index.html" class="nav-link">1. 프롬프트의 기초</a></li>
@@ -62,6 +89,27 @@
             <h1>프롬프트 엔지니어링<br>마스터 가이드</h1>
             <p>AI가 "지능이 낮은 초등학생"이라는 전제하에, 완벽한 답변을 이끌어내는 대화 설계 기술</p>
         </header>
+
+        <!-- 신규 추가: 인트로 섹션 -->
+        <section id="intro" class="intro-box searchable">
+            <h2>👋 환영합니다! 프롬프트 엔지니어링이 처음이신가요?</h2>
+            <p>AI(챗GPT 등)는 세상의 모든 지식을 가진 <strong>'눈치 없는 천재 요리사'</strong>와 같습니다.</p>
+
+            <div class="example-card bad">
+                <p><strong>❌ 하수들의 질문 (대충 말하기)</strong><br>
+                "배고파, 밥 좀 줘."<br>
+                👉 <strong>결과:</strong> 요리사가 자기 마음대로 오이를 듬뿍 넣은 매운 마라탕을 줍니다. (나는 매운 걸 못 먹고 오이를 싫어하는데 말이죠!)</p>
+            </div>
+
+            <div class="example-card good">
+                <p><strong>⭕ 프롬프트 엔지니어링 (정확하게 주문하기)</strong><br>
+                "너는 20년 경력의 이탈리안 셰프야. 내가 지금 다이어트 중이니까, 밀가루 없이 닭가슴살을 이용한 칼로리가 낮은 저녁 메뉴 레시피를 3가지만 추천해 줘. 초보자도 15분 안에 만들 수 있게 요리 순서를 번호 매겨서 알려줘."<br>
+                👉 <strong>결과:</strong> 내가 딱 원하던 완벽하고 건강한 레시피를 친절하게 정리해서 줍니다.</p>
+            </div>
+
+            <h3>프롬프트 엔지니어링이란?</h3>
+            <p>똑똑하지만 눈치 없는 AI에게 <em>'내가 원하는 결과물을 정확하게 뽑아내기 위해 말(질문)을 예쁘고 구체적으로 조립하는 기술'</em>입니다. 아래 가이드를 통해 그 비밀 공식을 마스터해 보세요!</p>
+        </section>
 
         <section id="sec1" class="searchable">
             <h2>1. 프롬프트의 3가지 유형</h2>
@@ -126,7 +174,7 @@
 텍스트 : "배송이 너무 늦어서 실망이야" - > 부정
 텍스트 : "그냥 평범한 제품이야" - > 중립
 텍스트 : "역대급 만족이야" - > 긍정
-텍스트 : "품질은 좋은데 가격이 비싸요" - > 중립
+텍스트 : "품질은 좋은데 가격이 비아요" - > 중립
 
 텍스트 : "이 제품 정말 맘에 들어"
 감정 :</pre>
