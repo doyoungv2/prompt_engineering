@@ -1,9 +1,11 @@
 :root {
-    --benz-purple: #5a67d8;
+    --benz-purple: #667eea;
     --benz-pink: #ed64a6;
     --bg-main: #ffffff;
     --bg-sidebar: #1a202c;
+    --bg-dark-zone: #0f172a; /* 더 깊은 다크 블루/블랙 */
     --text-main: #2d3748;
+    --text-dark-zone: #f8fafc;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,106 +28,76 @@ nav ul { list-style: none; }
 nav ul li a { display: block; padding: 0.7rem 1rem; color: #cbd5e0; text-decoration: none; border-radius: 8px; transition: 0.2s; font-size: 0.95rem; }
 nav ul li a:hover, nav ul li a.active { background: #2d3748; color: #fff; }
 
-/* Main Content */
-main { margin-left: 280px; padding: 4rem 10% 4rem 8%; min-height: 100vh; transition: 0.3s; }
-header { margin-bottom: 5rem; text-align: center; }
-header h1 { font-size: 3.5rem; font-weight: 900; line-height: 1.2; margin-bottom: 1.5rem; letter-spacing: -2px; color: #1a202c; }
-header p { font-size: 1.25rem; color: #718096; max-width: 700px; margin: 0 auto; }
+/* Main Content Layout */
+main { margin-left: 280px; min-height: 100vh; transition: 0.3s; display: flex; flex-direction: column; }
 
-section { margin-bottom: 6rem; padding-bottom: 4rem; border-bottom: 1px solid #edf2f7; }
+/* --- 상단 다크 존 (Header + Intro-box Area) --- */
+header { 
+    background: var(--bg-dark-zone); 
+    padding: 6rem 10% 4rem 8%; 
+    text-align: center;
+    color: var(--text-dark-zone);
+}
+header p:first-child { color: var(--benz-pink) !important; font-size: 1rem; font-weight: 800; }
+header h1 { 
+    font-size: 3.8rem; font-weight: 900; line-height: 1.2; margin-bottom: 1.5rem; letter-spacing: -2px; 
+    background: linear-gradient(to bottom, #ffffff, #cbd5e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+header p:last-child { font-size: 1.3rem; color: #94a3b8; max-width: 800px; margin: 0 auto; line-height: 1.6; }
+
+/* 시작하기 인트로 박스 (다크모드 버전) */
+.intro-box {
+    background: #1e293b !important;
+    border: 1px solid #334155 !important;
+    border-radius: 20px;
+    padding: 40px;
+    margin: 0 10% 4rem 8%;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    color: #f1f5f9;
+}
+.intro-box h2 { color: #fff !important; font-size: 1.8rem; font-weight: 800; margin-bottom: 1.5rem; border: none !important; }
+.intro-box h3 { color: #e2e8f0 !important; border-bottom: 1px solid #334155 !important; padding-bottom: 10px; margin-top: 30px; font-weight: 700; }
+.intro-box p { font-size: 1.1rem; color: #cbd5e0; line-height: 1.8; }
+.intro-box strong { color: #facc15; } /* 강조 텍스트 (노란색) */
+.intro-box em { color: #fff; font-style: normal; border-bottom: 2px solid var(--benz-purple); }
+
+/* 하단 일반 섹션 */
+section { padding: 4rem 10% 4rem 8%; margin-bottom: 2rem; border-bottom: 1px solid #edf2f7; }
 section h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 2rem; color: #2d3748; letter-spacing: -1px; }
-section h3 { font-size: 1.4rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: #4a5568; }
 
 /* Prompt Container */
 .prompt-container {
-    position: relative; background: #1a202c; border-radius: 12px;
+    position: relative; background: #0f172a; border-radius: 12px;
     padding: 2.5rem 2rem 2rem 2rem; margin: 1.5rem 0;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden;
 }
-.prompt-container pre { color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.95rem; white-space: pre-wrap; word-break: break-all; line-height: 1.6; }
-.copy-btn {
-    position: absolute; top: 12px; right: 12px;
-    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-    color: #fff; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer;
-    font-size: 0.75rem; transition: 0.2s;
-}
-.copy-btn:hover { background: var(--benz-purple); border-color: var(--benz-purple); }
-
-/* Mobile Header */
-.mobile-header {
-    display: none; position: fixed; top: 0; left: 0; width: 100%;
-    background: #fff; padding: 1rem 1.5rem; justify-content: space-between;
-    align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 1000;
-}
-.hamburger { font-size: 1.5rem; cursor: pointer; background: none; border: none; color: #333; }
+.prompt-container pre { color: #f1f5f9; font-family: 'Fira Code', monospace; font-size: 1rem; white-space: pre-wrap; word-break: break-all; line-height: 1.6; }
 
 /* Utils */
 .search-highlight { background: #fff3f8; color: var(--benz-pink); font-weight: 600; }
-
-/* Tables */
-table { width: 100%; border-collapse: collapse; margin: 2rem 0; background: #fff; border-radius: 12px; overflow: hidden; }
-th, td { padding: 1.2rem; text-align: left; border-bottom: 1px solid #eee; }
-th { background: #f8f9fa; color: #333; font-weight: 700; }
-
-/* Tabs & Accordions */
-.tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-.tab-btn {
-    background: #eee; border: none; color: #666; padding: 0.6rem 1.2rem;
-    cursor: pointer; font-size: 0.95rem; border-radius: 8px; transition: 0.3s;
-}
-.tab-btn.active { background: var(--benz-purple); color: #fff; }
-.tab-content { display: none; }
-.tab-content.active { display: block; animation: fadeIn 0.3s; }
-
-details {
-    background: #fcfcfc; border: 1px solid #eee;
-    border-radius: 12px; margin-bottom: 1rem; overflow: hidden;
-}
-summary {
-    padding: 1.2rem; cursor: pointer; font-weight: bold; color: var(--benz-pink);
-    outline: none; list-style: none; transition: 0.2s;
-}
-summary:hover { background: #fff5f8; }
-details[open] summary { border-bottom: 1px solid #eee; }
-details .accordion-body { padding: 2rem; }
-
-/* Back to Top */
-#back-to-top {
-    position: fixed; bottom: 30px; right: 30px;
-    width: 50px; height: 50px; border-radius: 50%;
-    background: var(--bg-sidebar); border: 2px solid var(--benz-purple);
-    color: #fff; font-size: 1.5rem; cursor: pointer;
-    display: none; align-items: center; justify-content: center;
-    transition: 0.3s; z-index: 1000;
-}
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 /* Responsive */
 @media (max-width: 768px) {
     aside { transform: translateX(-100%); width: 260px; }
     aside.open { transform: translateX(0); }
-    main { margin-left: 0; width: 100%; padding: 6rem 5% 2rem 5%; }
-    .mobile-header { display: flex; }
-    section { padding: 2rem; }
+    main { margin-left: 0; width: 100%; }
+    header { padding: 8rem 5% 4rem 5%; }
+    .intro-box { margin: 0 5% 3rem 5%; padding: 30px; }
     header h1 { font-size: 2.5rem; }
+    section { padding: 2rem 5%; }
 }
 
-/* --- 메인 타이틀 고급 애니메이션 세부 설정 --- */
+/* 애니메이션 설정 */
 h1.animate__animated {
     --animate-duration: 1.5s;
     animation-timing-function: ease-out;
-    text-shadow: 0 0 20px rgba(90, 103, 216, 0.1);
-    background: linear-gradient(120deg, #2d3748, #5a67d8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
 }
-
 @keyframes titleFloat {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-5px); }
 }
-
 h1.animate__fadeInDown {
     animation: fadeInDown 1.5s, titleFloat 3s ease-in-out infinite 1.5s !important;
 }
