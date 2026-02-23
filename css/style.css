@@ -110,22 +110,3 @@ details .accordion-body { padding: 2rem; }
     section { padding: 2rem; }
     header h1 { font-size: 2.5rem; }
 }
-
-/* --- 메인 타이틀 고급 애니메이션 세부 설정 --- */
-h1.animate__animated {
-    --animate-duration: 1.5s;
-    animation-timing-function: ease-out;
-    text-shadow: 0 0 20px rgba(90, 103, 216, 0.1);
-    background: linear-gradient(120deg, #2d3748, #5a67d8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-@keyframes titleFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-
-h1.animate__fadeInDown {
-    animation: fadeInDown 1.5s, titleFloat 3s ease-in-out infinite 1.5s !important;
-}
