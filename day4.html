@@ -7,6 +7,40 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/ai-style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        .intro-box {
+            background-color: #f8faff;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+        .example-card {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        .example-card.bad { background-color: #fff5f5; border-left: 5px solid #feb2b2; }
+        .example-card.good { background-color: #f0fff4; border-left: 5px solid #9ae6b4; }
+        .example-card strong { color: #2d3748; }
+        .perspective-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .perspective-item {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #edf2f7;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .perspective-item h4 { margin: 0 0 10px 0; color: var(--benz-purple); }
+    </style>
 </head>
 <body>
     <div id="progress-bar"></div>
